@@ -9,7 +9,15 @@ import rateLimit from 'express-rate-limit';
 import { connectDB } from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { clerkMiddleware } from '@clerk/express';
+import bidRoutes from './routes/bids.js';
+import disputeRoutes from './routes/disputes.js';
+import notificationRoutes from './routes/notifications.js';
+import userRoutes from './routes/users.js';
 
+app.use('/api/bids', bidRoutes);
+app.use('/api/disputes', disputeRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/users', userRoutes);
 // Routes
 import taskRoutes from './routes/tasks.js';
 import reviewRoutes from './routes/reviews.js';
@@ -22,19 +30,26 @@ console.log('📢 CLERK_SECRET_KEY loaded:', !!process.env.CLERK_SECRET_KEY);
 
 // Security middleware
 app.use(helmet());
+const allowedOrigins = [
+  "https://unitaskhub.vercel.app",
+  /\.vercel\.app$/
+];
 
-// CORS
+// Agar env variable diya ho to usse bhi add kar do
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
+}
+
+// ✅ CORS setup
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL?.split(',') || ['https://unitaskhub.vercel.app',
-      /\.vercel\.app$/
-    ],
-
+    origin: allowedOrigins,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 // Rate limiter
 const limiter = rateLimit({
