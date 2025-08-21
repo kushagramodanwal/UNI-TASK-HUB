@@ -84,6 +84,13 @@ app.get('/api', (req, res) => {
 });
 
 // Error handlers
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'UNI TASK HUB API root endpoint',
+  });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
