@@ -13,8 +13,6 @@ import { clerkMiddleware } from '@clerk/express';
 // Routes
 import taskRoutes from './routes/tasks.js';
 import reviewRoutes from './routes/reviews.js';
-import bidRoutes from './routes/bids.js';
-import notificationRoutes from './routes/notifications.js';
 
 const app = express();
 
@@ -28,7 +26,7 @@ app.use(helmet());
 // CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL?.split(',') || ['https://unitaskhub.vercel.app'],
+    origin: process.env.FRONTEND_URL?.split(',') || ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -51,7 +49,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Clerk auth middleware
+// Clerk auth middleware (pass key)
 app.use(
   clerkMiddleware({
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
@@ -61,9 +59,6 @@ app.use(
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Serve uploaded files
-app.use('/uploads', express.static('uploads'));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -78,8 +73,6 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/bids', bidRoutes);
-app.use('/api/notifications', notificationRoutes);
 
 // API info
 app.get('/api', (req, res) => {
@@ -90,11 +83,6 @@ app.get('/api', (req, res) => {
   });
 });
 
-// ✅ Root route (fix for Render `/` access)
-app.get("/", (req, res) => {
-  res.send("🚀 UNI TASK HUB Backend is running. Use /api for endpoints.");
-});
-
 // Error handlers
 app.use(notFound);
 app.use(errorHandler);
@@ -103,4 +91,13 @@ const PORT = process.env.PORT || 5001;
 
 connectDB()
   .then(() => {
-    app.listen(PO
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Failed to connect to MongoDB:', err);
+    process.exit(1);
+  });
+
+export default app;
