@@ -14,8 +14,6 @@ import { clerkMiddleware } from '@clerk/express';
 import taskRoutes from './routes/tasks.js';
 import reviewRoutes from './routes/reviews.js';
 import bidRoutes from './routes/bids.js';
-
-
 import notificationRoutes from './routes/notifications.js';
 
 const app = express();
@@ -30,7 +28,7 @@ app.use(helmet());
 // CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL?.split(',') || ['https://unitaskhub.vercel.app/'],
+    origin: process.env.FRONTEND_URL?.split(',') || ['https://unitaskhub.vercel.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -53,7 +51,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Clerk auth middleware (pass key)
+// Clerk auth middleware
 app.use(
   clerkMiddleware({
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
@@ -81,8 +79,6 @@ app.get('/health', (req, res) => {
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/bids', bidRoutes);
-
-
 app.use('/api/notifications', notificationRoutes);
 
 // API info
@@ -94,6 +90,11 @@ app.get('/api', (req, res) => {
   });
 });
 
+// ✅ Root route (fix for Render `/` access)
+app.get("/", (req, res) => {
+  res.send("🚀 UNI TASK HUB Backend is running. Use /api for endpoints.");
+});
+
 // Error handlers
 app.use(notFound);
 app.use(errorHandler);
@@ -102,13 +103,4 @@ const PORT = process.env.PORT || 5001;
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Failed to connect to MongoDB:', err);
-    process.exit(1);
-  });
-
-export default app;
+    app.listen(PO
