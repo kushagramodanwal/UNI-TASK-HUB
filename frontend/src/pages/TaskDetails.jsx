@@ -35,17 +35,27 @@ const TaskDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("TaskDetails: id param is", id);
         const [taskResponse, bidsResponse, reviewsResponse] = await Promise.all([
           taskAPI.getById(id),
           bidAPI.getForTask(id),
           reviewAPI.getAll({ taskId: id }),
         ]);
+        console.log("TaskDetails: taskResponse is", taskResponse);
 
-        if (taskResponse?.success) setTask(taskResponse.data);
+        // Accept both wrapped and direct responses
+        if (taskResponse?.success && taskResponse.data) {
+          setTask(taskResponse.data);
+        } else if (taskResponse?._id) {
+          setTask(taskResponse);
+        } else {
+          setTask(null);
+        }
         if (bidsResponse?.success) setBids(bidsResponse.data);
         if (reviewsResponse?.success) setReviews(reviewsResponse.data);
       } catch (err) {
         console.error("Error fetching task details:", err);
+        setTask(null);
       } finally {
         setLoading(false);
       }
@@ -555,16 +565,17 @@ const TaskDetails = () => {
       {/* Bid Modal */}
       <BidModal
         isOpen={showBidModal}
-        onClose={() => {
+        onClose={() => {existingBid={editingBid}
           setShowBidModal(false);
-          setEditingBid(null);
-        }}
-        onSubmit={handleSubmitBid}
+          setEditingBid(null);</div>
+        }});
+        onSubmit={handleSubmitBid}};
         task={task}
-        existingBid={editingBid}
-      />
-    </div>
-  );
-};
+      />export default TaskDetails;
 
-export default TaskDetails;
+
+
+
+
+
+export default TaskDetails;};  );    </div>
