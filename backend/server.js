@@ -26,10 +26,12 @@ console.log('📢 CLERK_SECRET_KEY loaded:', !!process.env.CLERK_SECRET_KEY);
 // Security middleware
 app.use(helmet());
 const allowedOrigins = [
-    "http://localhost:5173", 
+  "http://localhost:5173", 
   "https://unitaskhub.vercel.app",
-  /\.vercel\.app$/
+  /\.vercel\.app$/,
+  /\.onrender\.com$/
 ];
+
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
 }
@@ -106,7 +108,7 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 connectDB()
   .then(() => {

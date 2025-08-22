@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { taskAPI } from "../utils/api.js";
+
 const BrowseTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCollege, setSelectedCollege] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -14,17 +16,24 @@ const BrowseTasks = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await taskAPI.getAll();
+        
         if (response.success) {
           setTasks(response.data);
           setFilteredTasks(response.data);
+        } else {
+          setError(response.message || 'Failed to fetch tasks');
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching tasks:', err);
+        setError('Failed to load tasks. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
+    
     fetchTasks();
   }, []);
 
@@ -51,12 +60,60 @@ const BrowseTasks = () => {
     setFilteredTasks(filtered);
   }, [tasks, searchTerm, selectedCollege, selectedCategory]);
 
+  const handleTaskClick = (task) => {
+    if (!task._id) {
+      console.error('Task ID is missing for task:', task);
+      alert('Error: Task ID not found. Please try refreshing the page.');
+      return;
+    }
+
+    // Navigate to task details
+    navigate(`/task/${task._id}`);
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedCollege('');
+    setSelectedCategory('');
+  };
+
   if (loading) {
-    return <div className="text-center text-white">Loading tasks...</div>;
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="text-center text-white py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
+          <p>Loading tasks...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="text-center text-red-400 py-20">
+          <p className="text-xl mb-4">Error loading tasks</p>
+          <p className="mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (!tasks.length) {
-    return <div className="text-center text-gray-400">No tasks available</div>;
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="text-center text-gray-400 py-20">
+          <p className="text-xl mb-4">No tasks available</p>
+          <p>Check back later for new opportunities!</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -74,7 +131,7 @@ const BrowseTasks = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by title, description, or college..."
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
           </div>
 
@@ -84,7 +141,7 @@ const BrowseTasks = () => {
             <select
               value={selectedCollege}
               onChange={(e) => setSelectedCollege(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">All Colleges</option>
               {Array.from(new Set(tasks.map(task => task.college).filter(Boolean))).map(college => (
@@ -99,7 +156,7 @@ const BrowseTasks = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">All Categories</option>
               <option value="Academic Writing">Academic Writing</option>
@@ -118,11 +175,7 @@ const BrowseTasks = () => {
         {(searchTerm || selectedCollege || selectedCategory) && (
           <div className="mt-4 text-center">
             <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedCollege('');
-                setSelectedCategory('');
-              }}
+              onClick={handleClearFilters}
               className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
             >
               Clear All Filters
@@ -138,14 +191,16 @@ const BrowseTasks = () => {
         </p>
       </div>
 
+      {/* Tasks Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTasks.map((task) => (
           <div
             key={task._id}
-            className="bg-gray-800 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition"
+            className="bg-gray-800 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
+            onClick={() => handleTaskClick(task)}
           >
             <div>
-              <h2 className="text-lg font-semibold text-white mb-2">
+              <h2 className="text-lg font-semibold text-white mb-2 line-clamp-2">
                 {task.title}
               </h2>
               <p className="text-gray-300 text-sm mb-3 line-clamp-3">
@@ -153,9 +208,10 @@ const BrowseTasks = () => {
               </p>
 
               <div className="text-sm text-gray-400 mb-2">
-                <span className="font-semibold text-blue-400">₹{task.budget}</span>{" "}
-                • {task.category}
+                <span className="font-semibold text-cyan-400">₹{task.budget}</span>
+                {" "}• {task.category}
               </div>
+              
               <div className="text-xs text-gray-500 mb-2">
                 Deadline: {new Date(task.deadline).toLocaleDateString()}
               </div>
@@ -178,23 +234,33 @@ const BrowseTasks = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => {
-                if (task._id) {
-                  navigate(`/task/${task._id}`);
-                } else {
-                  alert('Task ID not found');
-                  console.error('Task ID is missing for task:', task);
-                }
-              }}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
-            >
-              View Details
-            </button>
-
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTaskClick(task);
+                }}
+                className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 rounded-lg transition-colors"
+              >
+                View Details
+              </button>
+            </div>
           </div>
         ))}
       </div>
+
+      {/* No Results Message */}
+      {filteredTasks.length === 0 && tasks.length > 0 && (
+        <div className="text-center text-gray-400 py-20">
+          <p className="text-xl mb-4">No tasks match your filters</p>
+          <button
+            onClick={handleClearFilters}
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-lg"
+          >
+            Clear Filters
+          </button>
+        </div>
+      )}
     </div>
   );
 };
