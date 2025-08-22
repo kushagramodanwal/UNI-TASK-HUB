@@ -9,19 +9,14 @@ import rateLimit from 'express-rate-limit';
 import { connectDB } from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { clerkMiddleware } from '@clerk/express';
-import bidRoutes from './routes/bids.js';
-import disputeRoutes from './routes/disputes.js';
-import notificationRoutes from './routes/notifications.js';
-import userRoutes from './routes/users.js';
 
-app.use('/api/bids', bidRoutes);
-app.use('/api/disputes', disputeRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/users', userRoutes);
 // Routes
+import bidRoutes from './routes/bids.js';
+import notificationRoutes from './routes/notifications.js';
 import taskRoutes from './routes/tasks.js';
 import reviewRoutes from './routes/reviews.js';
 
+// ✅ App initialize sabse pehle
 const app = express();
 
 // Debug check
@@ -31,16 +26,13 @@ console.log('📢 CLERK_SECRET_KEY loaded:', !!process.env.CLERK_SECRET_KEY);
 // Security middleware
 app.use(helmet());
 const allowedOrigins = [
+    "http://localhost:5173", 
   "https://unitaskhub.vercel.app",
   /\.vercel\.app$/
 ];
-
-// Agar env variable diya ho to usse bhi add kar do
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
 }
-
-// ✅ CORS setup
 app.use(
   cors({
     origin: allowedOrigins,
@@ -49,7 +41,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 
 // Rate limiter
 const limiter = rateLimit({
@@ -67,7 +58,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Clerk auth middleware (pass key)
+// Clerk auth middleware
 app.use(
   clerkMiddleware({
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
@@ -88,9 +79,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Routes
+// ✅ Routes (abhi yeh hi rakhe)
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/bids', bidRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // API info
 app.get('/api', (req, res) => {
@@ -101,7 +94,7 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Error handlers
+// Root endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -109,6 +102,7 @@ app.get('/', (req, res) => {
   });
 });
 
+// Error handlers
 app.use(notFound);
 app.use(errorHandler);
 

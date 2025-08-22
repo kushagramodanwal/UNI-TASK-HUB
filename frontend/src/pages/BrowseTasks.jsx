@@ -159,7 +159,7 @@ const BrowseTasks = () => {
               <div className="text-xs text-gray-500 mb-2">
                 Deadline: {new Date(task.deadline).toLocaleDateString()}
               </div>
-              
+
               {/* College and Bidding Info */}
               <div className="space-y-2 mb-2">
                 <div className="text-xs text-gray-400">
@@ -179,11 +179,19 @@ const BrowseTasks = () => {
             </div>
 
             <button
-              onClick={() => navigate(`/task/${task._id}`)}
+              onClick={() => {
+                if (task._id) {
+                  navigate(`/task/${task._id}`);
+                } else {
+                  alert('Task ID not found');
+                  console.error('Task ID is missing for task:', task);
+                }
+              }}
               className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
             >
               View Details
             </button>
+
           </div>
         ))}
       </div>
