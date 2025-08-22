@@ -193,63 +193,60 @@ const BrowseTasks = () => {
 
       {/* Tasks Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTasks.map((task) => {
-          console.log("Task in BrowseTasks:", task); // Add this line
-          return (
-            <div
-              key={task._id}
-              className="bg-gray-800 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
-              onClick={() => handleTaskClick(task)}
-            >
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-2 line-clamp-2">
-                  {task.title}
-                </h2>
-                <p className="text-gray-300 text-sm mb-3 line-clamp-3">
-                  {task.description}
-                </p>
+        {filteredTasks.map((task) => (
+          <div
+            key={task._id}
+            className="bg-gray-800 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
+            onClick={() => handleTaskClick(task)}
+          >
+            <div>
+              <h2 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+                {task.title}
+              </h2>
+              <p className="text-gray-300 text-sm mb-3 line-clamp-3">
+                {task.description}
+              </p>
 
-                <div className="text-sm text-gray-400 mb-2">
-                  <span className="font-semibold text-cyan-400">₹{task.budget}</span>
-                  {" "}• {task.category}
-                </div>
-                
-                <div className="text-xs text-gray-500 mb-2">
-                  Deadline: {new Date(task.deadline).toLocaleDateString()}
-                </div>
-
-                {/* College and Bidding Info */}
-                <div className="space-y-2 mb-2">
-                  <div className="text-xs text-gray-400">
-                    <span className="text-gray-500">College:</span> {task.college || 'Not specified'}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                      🔒 Anonymous Bidding
-                    </span>
-                    {task.bidCount > 0 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {task.bidCount} bid{task.bidCount !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                  </div>
-                </div>
+              <div className="text-sm text-gray-400 mb-2">
+                <span className="font-semibold text-cyan-400">₹{task.budget}</span>
+                {" "}• {task.category}
+              </div>
+              
+              <div className="text-xs text-gray-500 mb-2">
+                Deadline: {new Date(task.deadline).toLocaleDateString()}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-700">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleTaskClick(task);
-                  }}
-                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 rounded-lg transition-colors"
-                >
-                  View Details
-                </button>
+              {/* College and Bidding Info */}
+              <div className="space-y-2 mb-2">
+                <div className="text-xs text-gray-400">
+                  <span className="text-gray-500">College:</span> {task.college || 'Not specified'}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    🔒 Anonymous Bidding
+                  </span>
+                  {task.bidCount > 0 && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {task.bidCount} bid{task.bidCount !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          );
-        })}
+
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTaskClick(task);
+                }}
+                className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 rounded-lg transition-colors"
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* No Results Message */}
