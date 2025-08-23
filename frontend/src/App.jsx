@@ -6,7 +6,7 @@ import PostTask from './pages/PostTask';
 import BrowseTasks from './pages/BrowseTasks';
 import MyTasks from './pages/MyTasks';
 import MyBids from './pages/MyBids';
-import Reviews from './pages/Reviews';
+// import Reviews from './pages/Reviews';
 import NotFound from './pages/NotFound';
 import { SignedIn, SignedOut, RedirectToSignIn, useAuth } from '@clerk/clerk-react';
 import { useEffect } from 'react';
@@ -76,7 +76,7 @@ function App() {
             }
           />
 
-          <Route path="/reviews" element={<Reviews />} />
+          {/* <Route path="/reviews" element={<Reviews />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

@@ -135,7 +135,7 @@ const Navbar = () => {
                 <Link to="/post-task" className="text-gray-400 hover:text-white text-sm font-medium transition">Post Task</Link>
                 <Link to="/my-tasks" className="text-gray-400 hover:text-white text-sm font-medium transition">My Tasks</Link>
                 <Link to="/my-bids" className="text-gray-400 hover:text-white text-sm font-medium transition">My Bids</Link>
-                <Link to="/reviews" className="text-gray-400 hover:text-white text-sm font-medium transition">Reviews</Link>
+                {/* <Link to="/reviews" className="text-gray-400 hover:text-white text-sm font-medium transition">Reviews</Link> */}
               </>
             )}
           </div>

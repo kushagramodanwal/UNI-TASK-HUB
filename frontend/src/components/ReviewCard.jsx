@@ -1,4 +1,4 @@
-// const ReviewCard = ({ review, showActions = false, onEdit, onDelete }) => {
+// const Card = ({ , showActions = false, onEdit, onDelete }) => {
 //   const renderStars = (rating) => {
 //     return Array.from({ length: 5 }, (_, i) => (
 //       <svg
@@ -16,31 +16,31 @@
 //     <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex gap-4">
 //       {/* User Avatar */}
 //       <img
-//         src={review.userImage || 'https://via.placeholder.com/40'}
-//         alt={review.userName}
+//         src={.userImage || 'https://via.placeholder.com/40'}
+//         alt={.userName}
 //         className="w-10 h-10 rounded-full object-cover"
 //       />
 
 //       {/* Content */}
 //       <div className="flex-1">
 //         <div className="flex items-center justify-between">
-//           <h4 className="text-white font-semibold">{review.userName}</h4>
-//           <div className="flex">{renderStars(review.rating)}</div>
+//           <h4 className="text-white font-semibold">{.userName}</h4>
+//           <div className="flex">{renderStars(.rating)}</div>
 //         </div>
-//         <p className="text-gray-400 text-sm mt-1">{review.comment}</p>
+//         <p className="text-gray-400 text-sm mt-1">{.comment}</p>
 
 //         <div className="flex items-center justify-between mt-2 text-gray-500 text-xs">
-//           <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+//           <span>{new Date(.createdAt).toLocaleDateString()}</span>
 //           {showActions && (
 //             <div className="flex items-center gap-2">
 //               <button
-//                 onClick={() => onEdit(review)}
+//                 onClick={() => onEdit()}
 //                 className="text-blue-400 hover:text-blue-500 transition text-xs"
 //               >
 //                 Edit
 //               </button>
 //               <button
-//                 onClick={() => onDelete(review.id)}
+//                 onClick={() => onDelete(.id)}
 //                 className="text-red-500 hover:text-red-600 transition text-xs"
 //               >
 //                 Delete
@@ -53,4 +53,4 @@
 //   );
 // };
 
-// export default ReviewCard;
+// export default Card;

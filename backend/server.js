@@ -14,7 +14,7 @@ import { clerkMiddleware } from '@clerk/express';
 import bidRoutes from './routes/bids.js';
 import notificationRoutes from './routes/notifications.js';
 import taskRoutes from './routes/tasks.js';
-import reviewRoutes from './routes/reviews.js';
+// import reviewRoutes from './routes/reviews.js';
 
 // ✅ App initialize sabse pehle
 const app = express();
@@ -83,7 +83,7 @@ app.get('/health', (req, res) => {
 
 // ✅ Routes (abhi yeh hi rakhe)
 app.use('/api/tasks', taskRoutes);
-app.use('/api/reviews', reviewRoutes);
+// app.use('/api/reviews', reviewRoutes);
 app.use('/api/bids', bidRoutes);
 app.use('/api/notifications', notificationRoutes);
 
