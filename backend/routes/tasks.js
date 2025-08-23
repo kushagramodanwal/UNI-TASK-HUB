@@ -25,17 +25,14 @@ import Task from '../models/Task.js';
 
 const router = express.Router();
 
-// Public routes
 router.get('/', validateTaskQueries, getTasks);
 router.get('/stats', getTaskStats);
 
-// Protected routes
 router.use(authenticateToken);
 
 router.post('/', upload.array('files', 5), createTask);
 router.get('/my-tasks', getMyTasks);
 
-// Public routes with individual validation (must come after specific routes)
 router.get('/:id', validateObjectIdParam, getTaskById);
 router.put('/:id', validateObjectIdParam, checkOwnership(Task), validateUpdateTask, updateTask);
 router.put('/:id/submit', validateObjectIdParam, submitTask);

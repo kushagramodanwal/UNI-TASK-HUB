@@ -8,23 +8,16 @@ import {
   getAllDisputes,
   getDisputeStats
 } from '../controllers/disputeController.js';
-import {
-  authenticateToken
-} from '../middleware/auth.js';
-import {
-  validateObjectId
-} from '../middleware/validation.js';
+import { authenticateToken } from '../middleware/auth.js';
+import { validateObjectId } from '../middleware/validation.js';
 import { body } from 'express-validator';
 
 const router = express.Router();
 
-// Public routes
 router.get('/stats', getDisputeStats);
 
-// Protected routes
 router.use(authenticateToken);
 
-// Dispute creation and management
 router.post('/', [
   body('paymentId').isMongoId().withMessage('Invalid payment ID'),
   body('reason').isIn([
@@ -40,7 +33,7 @@ router.post('/', [
   body('description').isLength({ min: 10, max: 1000 }).withMessage('Description must be between 10 and 1000 characters')
 ], createDispute);
 
-router.get('/', getAllDisputes); // Admin route
+router.get('/', getAllDisputes);
 router.get('/my-disputes', getMyDisputes);
 router.get('/:disputeId', validateObjectId('disputeId'), getDisputeDetails);
 

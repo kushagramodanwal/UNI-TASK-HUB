@@ -1,12 +1,9 @@
 import { verifyToken } from '@clerk/clerk-sdk-node';
 
-/**
- * Middleware to verify Clerk JWT token
- */
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader?.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader?.split(' ')[1];
 
     if (!token) {
       return res.status(401).json({
@@ -15,12 +12,10 @@ export const authenticateToken = async (req, res, next) => {
       });
     }
 
-    // ✅ Simply verify the token with your Clerk secret key
     const payload = await verifyToken(token, {
       secretKey: process.env.CLERK_SECRET_KEY
     });
 
-    // Attach user info to request
     req.user = {
       id: payload.sub,
       email: payload.email,
@@ -40,9 +35,6 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-/**
- * Middleware to check if user is authenticated (optional)
- */
 export const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -65,14 +57,10 @@ export const optionalAuth = async (req, res, next) => {
 
     next();
   } catch {
-    // Continue without authentication if token invalid
     next();
   }
 };
 
-/**
- * Middleware to check if user owns a resource
- */
 export const checkOwnership = (resourceModel) => {
   return async (req, res, next) => {
     try {

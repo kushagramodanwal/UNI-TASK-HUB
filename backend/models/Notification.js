@@ -44,7 +44,6 @@ const notificationSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  // Related entities
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
@@ -65,18 +64,15 @@ const notificationSchema = new mongoose.Schema({
     ref: 'Dispute',
     default: null
   },
-  // Action URL for frontend routing
   actionUrl: {
     type: String,
     trim: true
   },
-  // Priority level
   priority: {
     type: String,
     enum: ['low', 'medium', 'high', 'urgent'],
     default: 'medium'
   },
-  // Delivery preferences
   emailSent: {
     type: Boolean,
     default: false
@@ -93,14 +89,12 @@ const notificationSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  // Auto-delete after certain period
   expiresAt: {
     type: Date,
     default: function() {
-      return new Date(Date.now() + 90 * 24 * 60 * 60 * 1000); // 90 days from now
+      return new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
     }
   },
-  // Additional metadata
   metadata: {
     type: mongoose.Schema.Types.Mixed,
     default: {}
@@ -111,7 +105,6 @@ const notificationSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for time since creation
 notificationSchema.virtual('timeAgo').get(function() {
   const now = new Date();
   const created = new Date(this.createdAt);
@@ -127,46 +120,32 @@ notificationSchema.virtual('timeAgo').get(function() {
   return created.toLocaleDateString();
 });
 
-// Index for better query performance
 notificationSchema.index({ userId: 1 });
 notificationSchema.index({ type: 1 });
 notificationSchema.index({ isRead: 1 });
 notificationSchema.index({ priority: 1 });
 notificationSchema.index({ createdAt: -1 });
 notificationSchema.index({ expiresAt: 1 });
-
-// Compound index for user notifications
 notificationSchema.index({ userId: 1, isRead: 1, createdAt: -1 });
-
-// TTL index to auto-delete expired notifications
 notificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-// Static method to create and save notification
 notificationSchema.statics.createNotification = async function(notificationData) {
   const notification = new this(notificationData);
   await notification.save();
-  
-  // Here you could add real-time notification logic (Socket.io, etc.)
-  // this.emitRealTimeNotification(notification);
-  
   return notification;
 };
 
-// Static method to mark notifications as read
 notificationSchema.statics.markAsRead = async function(userId, notificationIds = []) {
   const filter = { userId, isRead: false };
-  
   if (notificationIds.length > 0) {
     filter._id = { $in: notificationIds };
   }
-  
   return await this.updateMany(filter, {
     isRead: true,
     readAt: new Date()
   });
 };
 
-// Static method to get unread count
 notificationSchema.statics.getUnreadCount = async function(userId) {
   return await this.countDocuments({ userId, isRead: false });
 };

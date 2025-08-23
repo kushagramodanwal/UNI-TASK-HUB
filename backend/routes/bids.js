@@ -9,9 +9,7 @@ import {
   updateBid,
   getBidStats
 } from '../controllers/bidController.js';
-import {
-  authenticateToken
-} from '../middleware/auth.js';
+import { authenticateToken } from '../middleware/auth.js';
 import {
   validateCreateBid,
   validateUpdateBid,
@@ -20,11 +18,9 @@ import {
 
 const router = express.Router();
 
-// Public routes
 router.get('/stats', getBidStats);
 router.get('/task/:taskId', validateObjectId('taskId'), getBidsForTask);
 
-// Protected routes
 router.use(authenticateToken);
 
 router.post('/', validateCreateBid, createBid);

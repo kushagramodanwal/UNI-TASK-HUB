@@ -61,23 +61,18 @@ const reviewSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for formatted date
 reviewSchema.virtual('formattedDate').get(function() {
   return this.createdAt.toLocaleDateString();
 });
 
-// Index for better query performance
 reviewSchema.index({ taskId: 1 });
 reviewSchema.index({ reviewerId: 1 });
 reviewSchema.index({ revieweeId: 1 });
 reviewSchema.index({ rating: 1 });
 reviewSchema.index({ reviewType: 1 });
 reviewSchema.index({ createdAt: -1 });
-
-// Compound index to prevent multiple reviews from same user for same task
 reviewSchema.index({ taskId: 1, reviewerId: 1 }, { unique: true });
 
-// Pre-save middleware to validate reviewer is not the same as reviewee
 reviewSchema.pre('save', async function(next) {
   try {
     if (this.reviewerId === this.revieweeId) {
@@ -91,7 +86,6 @@ reviewSchema.pre('save', async function(next) {
       throw new Error('Task not found');
     }
    
-    // Validate review type based on task participants
     if (this.reviewType === 'client_to_freelancer') {
       if (task.userId !== this.reviewerId) {
         throw new Error('Only the task client can review the freelancer');

@@ -141,12 +141,10 @@ const taskSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for formatted deadline
 taskSchema.virtual('formattedDeadline').get(function() {
   return this.deadline.toLocaleDateString();
 });
 
-// Virtual for time until deadline
 taskSchema.virtual('timeUntilDeadline').get(function() {
   const now = new Date();
   const deadline = new Date(this.deadline);
@@ -155,13 +153,11 @@ taskSchema.virtual('timeUntilDeadline').get(function() {
   return diffDays;
 });
 
-// Index for better query performance
 taskSchema.index({ category: 1, status: 1 });
 taskSchema.index({ userId: 1 });
 taskSchema.index({ deadline: 1 });
 taskSchema.index({ createdAt: -1 });
 
-// Pre-save middleware to update status based on deadline
 taskSchema.pre('save', function(next) {
   if (this.deadline < new Date() && this.status === 'open') {
     this.status = 'cancelled';

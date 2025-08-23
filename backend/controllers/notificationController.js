@@ -1,11 +1,6 @@
 import Notification from '../models/Notification.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
-/**
- * @desc    Get notifications for user
- * @route   GET /api/notifications
- * @access  Private
- */
 export const getNotifications = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
@@ -55,11 +50,6 @@ export const getNotifications = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Mark notification as read
- * @route   PUT /api/notifications/:notificationId/read
- * @access  Private
- */
 export const markAsRead = asyncHandler(async (req, res) => {
   const { notificationId } = req.params;
   const userId = req.user?.id;
@@ -73,12 +63,10 @@ export const markAsRead = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'Notification not found' });
   }
 
-  // Verify user owns the notification
   if (notification.userId !== userId) {
     return res.status(403).json({ success: false, message: 'Access denied' });
   }
 
-  // Mark as read
   notification.isRead = true;
   notification.readAt = new Date();
   await notification.save();
@@ -90,11 +78,6 @@ export const markAsRead = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Mark all notifications as read
- * @route   PUT /api/notifications/mark-all-read
- * @access  Private
- */
 export const markAllAsRead = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
@@ -110,11 +93,6 @@ export const markAllAsRead = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Delete notification
- * @route   DELETE /api/notifications/:notificationId
- * @access  Private
- */
 export const deleteNotification = asyncHandler(async (req, res) => {
   const { notificationId } = req.params;
   const userId = req.user?.id;
@@ -128,7 +106,6 @@ export const deleteNotification = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'Notification not found' });
   }
 
-  // Verify user owns the notification
   if (notification.userId !== userId) {
     return res.status(403).json({ success: false, message: 'Access denied' });
   }
@@ -141,11 +118,6 @@ export const deleteNotification = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Get unread count
- * @route   GET /api/notifications/unread-count
- * @access  Private
- */
 export const getUnreadCount = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
@@ -160,11 +132,6 @@ export const getUnreadCount = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Clear old notifications (30+ days)
- * @route   DELETE /api/notifications/clear-old
- * @access  Private
- */
 export const clearOldNotifications = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
@@ -186,11 +153,6 @@ export const clearOldNotifications = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @desc    Create test notification (development only)
- * @route   POST /api/notifications/test
- * @access  Private
- */
 export const createTestNotification = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {

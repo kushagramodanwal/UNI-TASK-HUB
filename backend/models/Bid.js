@@ -63,7 +63,6 @@ const bidSchema = new mongoose.Schema({
     size: Number,
     url: String
   }],
-  // Additional freelancer information at time of bid
   freelancerRating: {
     type: Number,
     default: 0
@@ -78,7 +77,6 @@ const bidSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for formatted delivery time
 bidSchema.virtual('formattedDeliveryTime').get(function() {
   const days = this.deliveryTime;
   if (days === 1) return '1 day';
@@ -87,17 +85,13 @@ bidSchema.virtual('formattedDeliveryTime').get(function() {
   return `${Math.round(days / 30)} month${Math.round(days / 30) > 1 ? 's' : ''}`;
 });
 
-// Index for better query performance
 bidSchema.index({ taskId: 1 });
 bidSchema.index({ freelancerId: 1 });
 bidSchema.index({ status: 1 });
 bidSchema.index({ amount: 1 });
 bidSchema.index({ createdAt: -1 });
-
-// Compound index to prevent duplicate bids from same freelancer on same task
 bidSchema.index({ taskId: 1, freelancerId: 1 }, { unique: true });
 
-// Pre-save middleware to update bid count on task
 bidSchema.post('save', async function() {
   if (this.isNew) {
     const Task = mongoose.model('Task');
@@ -107,7 +101,6 @@ bidSchema.post('save', async function() {
   }
 });
 
-// Post-remove middleware to decrease bid count on task
 bidSchema.post('deleteOne', { document: true, query: false }, async function() {
   const Task = mongoose.model('Task');
   await Task.findByIdAndUpdate(this.taskId, {

@@ -1,4 +1,3 @@
-// backend/middleware/validateObjectId.js
 import mongoose from 'mongoose';
 
 export default function validateObjectIdParam(paramName = 'id') {

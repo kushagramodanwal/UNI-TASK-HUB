@@ -63,7 +63,6 @@ const disputeSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  // Important dates
   resolvedAt: {
     type: Date,
     default: null
@@ -72,7 +71,6 @@ const disputeSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  // Evidence and attachments
   evidence: [{
     type: {
       type: String,
@@ -95,7 +93,6 @@ const disputeSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
-  // Communication thread
   messages: [{
     senderId: {
       type: String,
@@ -120,7 +117,6 @@ const disputeSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
-  // Financial details
   disputeAmount: {
     type: Number,
     required: [true, 'Dispute amount is required'],
@@ -130,11 +126,10 @@ const disputeSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  // Auto-close after certain period
   autoCloseAt: {
     type: Date,
     default: function() {
-      return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+      return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     }
   }
 }, {
@@ -143,7 +138,6 @@ const disputeSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for dispute age in days
 disputeSchema.virtual('ageInDays').get(function() {
   const now = new Date();
   const created = new Date(this.createdAt);
@@ -151,7 +145,6 @@ disputeSchema.virtual('ageInDays').get(function() {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 });
 
-// Virtual for time until auto-close
 disputeSchema.virtual('daysUntilAutoClose').get(function() {
   if (!this.autoCloseAt) return null;
   const now = new Date();
@@ -161,7 +154,6 @@ disputeSchema.virtual('daysUntilAutoClose').get(function() {
   return days > 0 ? days : 0;
 });
 
-// Index for better query performance
 disputeSchema.index({ taskId: 1 });
 disputeSchema.index({ paymentId: 1 });
 disputeSchema.index({ initiatorId: 1 });
@@ -172,7 +164,6 @@ disputeSchema.index({ adminId: 1 });
 disputeSchema.index({ createdAt: -1 });
 disputeSchema.index({ autoCloseAt: 1 });
 
-// Pre-save middleware to update task status when dispute is created
 disputeSchema.post('save', async function() {
   if (this.isNew) {
     const Task = mongoose.model('Task');

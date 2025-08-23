@@ -61,7 +61,6 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  // Financial information
   walletBalance: {
     type: Number,
     default: 0,
@@ -75,7 +74,6 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  // Contact information
   phone: {
     type: String,
     trim: true
@@ -89,7 +87,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'UTC'
   },
-  // Preferences
   emailNotifications: {
     type: Boolean,
     default: true
@@ -98,7 +95,6 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  // Statistics
   tasksPosted: {
     type: Number,
     default: 0
@@ -121,18 +117,15 @@ const userSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for full name
 userSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`.trim();
 });
 
-// Virtual for success rate
 userSchema.virtual('successRate').get(function() {
   if (this.bidsSubmitted === 0) return 0;
   return Math.round((this.bidsWon / this.bidsSubmitted) * 100);
 });
 
-// Index for better query performance
 userSchema.index({ clerkId: 1 });
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
