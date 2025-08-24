@@ -26,18 +26,34 @@ console.log('📢 CLERK_SECRET_KEY loaded:', !!process.env.CLERK_SECRET_KEY);
 // Security middleware
 app.use(helmet());
 const allowedOrigins = [
-  "http://localhost:5173", 
+  "http://localhost:5173",
   "https://unitaskhub.vercel.app",
-  /\.vercel\.app$/,
-  /\.onrender\.com$/
+  /\.vercel\.app$/,   // allow any Vercel subdomain
+  /\.onrender\.com$/  // allow your Render backend
 ];
 
+// Add env FRONTEND_URL if provided
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
 }
+
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow non-browser requests (like curl, Postman)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is in allowedOrigins (string match or regex test)
+      if (
+        allowedOrigins.some((allowed) =>
+          allowed instanceof RegExp ? allowed.test(origin) : allowed === origin
+        )
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
