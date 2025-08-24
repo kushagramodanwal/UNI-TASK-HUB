@@ -124,26 +124,26 @@ export const taskAPI = {
 // ===============================
 // Review-related API functions
 // ===============================
-export const reviewAPI = {
-  getAll: (filters = {}) => {
-    const params = new URLSearchParams(filters);
-    return apiRequest(`/reviews?${params}`);
-  },
+// export const reviewAPI = {
+//   getAll: (filters = {}) => {
+//     const params = new URLSearchParams(filters);
+//     return apiRequest(`/reviews?${params}`);
+//   },
   
-  create: (reviewData) => apiRequest('/reviews', {
-    method: 'POST',
-    body: JSON.stringify(reviewData),
-  }),
+//   create: (reviewData) => apiRequest('/reviews', {
+//     method: 'POST',
+//     body: JSON.stringify(reviewData),
+//   }),
   
-  update: (id, reviewData) => apiRequest(`/reviews/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(reviewData),
-  }),
+//   update: (id, reviewData) => apiRequest(`/reviews/${id}`, {
+//     method: 'PUT',
+//     body: JSON.stringify(reviewData),
+//   }),
   
-  delete: (id) => apiRequest(`/reviews/${id}`, {
-    method: 'DELETE',
-  }),
-};
+//   delete: (id) => apiRequest(`/reviews/${id}`, {
+//     method: 'DELETE',
+//   }),
+// };
 
 // ===============================
 // Bid-related API functions
@@ -189,36 +189,36 @@ export const bidAPI = {
 // ===============================
 // Dispute-related API functions
 // ===============================
-export const disputeAPI = {
-  create: (disputeData) => apiRequest('/disputes', {
-    method: 'POST',
-    body: JSON.stringify(disputeData),
-  }),
+// export const disputeAPI = {
+//   create: (disputeData) => apiRequest('/disputes', {
+//     method: 'POST',
+//     body: JSON.stringify(disputeData),
+//   }),
   
-  addMessage: (disputeId, message) => apiRequest(`/disputes/${disputeId}/messages`, {
-    method: 'POST',
-    body: JSON.stringify({ message }),
-  }),
+//   addMessage: (disputeId, message) => apiRequest(`/disputes/${disputeId}/messages`, {
+//     method: 'POST',
+//     body: JSON.stringify({ message }),
+//   }),
   
-  resolve: (disputeId, resolution) => apiRequest(`/disputes/${disputeId}/resolve`, {
-    method: 'PUT',
-    body: JSON.stringify(resolution),
-  }),
+//   resolve: (disputeId, resolution) => apiRequest(`/disputes/${disputeId}/resolve`, {
+//     method: 'PUT',
+//     body: JSON.stringify(resolution),
+//   }),
   
-  getDetails: (disputeId) => apiRequest(`/disputes/${disputeId}`),
+//   getDetails: (disputeId) => apiRequest(`/disputes/${disputeId}`),
   
-  getMyDisputes: (filters = {}) => {
-    const params = new URLSearchParams(filters);
-    return apiRequest(`/disputes/my-disputes?${params}`);
-  },
+//   getMyDisputes: (filters = {}) => {
+//     const params = new URLSearchParams(filters);
+//     return apiRequest(`/disputes/my-disputes?${params}`);
+//   },
   
-  getAll: (filters = {}) => {
-    const params = new URLSearchParams(filters);
-    return apiRequest(`/disputes?${params}`);
-  },
+//   getAll: (filters = {}) => {
+//     const params = new URLSearchParams(filters);
+//     return apiRequest(`/disputes?${params}`);
+//   },
   
-  getStats: () => apiRequest('/disputes/stats'),
-};
+//   getStats: () => apiRequest('/disputes/stats'),
+// };
 
 // ===============================
 // Notification-related API functions
