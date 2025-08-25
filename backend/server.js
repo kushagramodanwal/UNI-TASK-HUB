@@ -25,6 +25,7 @@ console.log('📢 CLERK_SECRET_KEY loaded:', !!process.env.CLERK_SECRET_KEY);
 
 // Security middleware
 app.use(helmet());
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://unitaskhub.vercel.app",
@@ -36,6 +37,7 @@ const allowedOrigins = [
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
 }
+/// ... => MTLB
 
 app.use(
   cors({
