@@ -37,7 +37,7 @@ const allowedOrigins = [
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(...process.env.FRONTEND_URL.split(","));
 }
-/// ... => MTLB
+/// ... mltb spread
 
 app.use(
   cors({
