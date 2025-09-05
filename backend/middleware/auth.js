@@ -1,5 +1,6 @@
 import { verifyToken } from '@clerk/clerk-sdk-node';
 
+
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;

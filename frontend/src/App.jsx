@@ -17,12 +17,19 @@ function App() {
   const { getToken } = useAuth();
 
   useEffect(() => {
-    // Set up the auth token getter for API utilities
-    setAuthTokenGetter(() => getToken());
+    // ✅ Pass the function itself, not the result of calling it
+    setAuthTokenGetter(getToken);
   }, [getToken]);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#000000' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#000000',
+      }}
+    >
       <Navbar />
       <main className="main">
         <Routes>
