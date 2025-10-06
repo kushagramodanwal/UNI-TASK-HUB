@@ -24,27 +24,35 @@ const TaskDetails = () => {
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTaskThenBids = async () => {
       try {
-        const [taskResponse, bidsResponse] = await Promise.all([
-          taskAPI.getById(id),
-          bidAPI.getForTask(id)
-        ]);
-        
+        const taskResponse = await taskAPI.getById(id);
         if (taskResponse.success) {
           setTask(taskResponse.data);
+        } else {
+          setTask(null);
         }
-        
+      } catch (err) {
+        console.error('Error fetching task:', err);
+        setTask(null);
+      } finally {
+        setLoading(false);
+      }
+
+      try {
+        const bidsResponse = await bidAPI.getForTask(id);
         if (bidsResponse.success) {
           setBids(bidsResponse.data);
         }
       } catch (err) {
-        console.error('Error fetching data:', err);
-      } finally {
-        setLoading(false);
+        if (String(err?.message || '').toLowerCase().includes('unauthorized')) {
+          // Ignore 401 for bids; page should still show task details
+          return;
+        }
+        console.error('Error fetching bids:', err);
       }
     };
-    fetchData();
+    fetchTaskThenBids();
   }, [id]);
 
   const fetchBids = async () => {
